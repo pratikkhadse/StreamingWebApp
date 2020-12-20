@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <script src="angularjs/angular.min.js"></script>
+</head>
+
+<body>
+    <div ng-app="mainApp" ng-controller="mainController" ng-cloak>
+        <div>
+            <a href="emit">Start Video Stream</a>
+        </div>
+        <br>
+        <div>
+            <label>Streaming</label>
+            <li ng-repeat="host in onlineHost"><a href="{{'/live/' + host}}">{{host}}</a></li>
+        </div>
+    </div>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script>
+
+        angular.module('mainApp', []).controller('mainController', function ($scope) {
+            var socket = io();
+            socket.emit('main-page', 'user'+Date.now());
+            $scope.onlineHost = [];
+            socket.on('active-host', function (list) {
+                console.log(list);
+                $scope.$apply(function(){
+                    $scope.onlineHost = list;
+                })
+            })
+            
+        })
+    </script>
+</body>
+
+</html>
